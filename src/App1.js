@@ -12,25 +12,26 @@ const PRODUCTS = [
 function FilterableProductTable() {
 
         const [filterText, setFilterText] = useState('');
+        const [inStockOnly, setInStockOnly] = useState(false);
+
 
     return (
       <div>
-        <SearchBar filterText={filterText} setFilterText={setFilterText} />
-        <ProductTable  filterText={filterText}/>
+        <SearchBar  setFilterText={setFilterText} setInStockOnly = {setInStockOnly}/>
+        <ProductTable  filterText={filterText} inStockOnly = {inStockOnly}/>
       </div>
     );
   }
 
   function SearchBar(props) {
-    // const [inStockOnly, setInStockOnly] = useState(false);
-    let {filterText, setFilterText} = props;
+    let {setInStockOnly, setFilterText} = props;
 
     return (
       <form>
-        <input type="text" placeholder="Search..." onChange={(e) => {setFilterText(e.target.value)}}/>
+        <input type="text" placeholder="Search..." onChange={(e) => {setFilterText(e.target.value)}} className='search'/>
         <br></br>
         <label>
-          <input type="checkbox" />
+          <input type="checkbox" onChange={(e) => {setInStockOnly(e.target.checked)}} />
           Only show products in stock
         </label>
       </form>
@@ -41,12 +42,14 @@ function FilterableProductTable() {
 
   function ProductTable(props) {
     const [products, setproducts] = useState(PRODUCTS);
-    let {filterText} = props;
+    let {filterText, inStockOnly} = props;
 
-    const filteredArr = products.filter(({name}) => filterText != '' && name.toLowerCase().includes(filterText.toLowerCase()))
-    console.log(filteredArr)
+    const filteredArr = products.filter(({name, stocked}) => {
+      return filterText != '' && name.toLowerCase().includes(filterText.toLowerCase()) && (!inStockOnly || stocked) 
+    })
     
     if(filteredArr.length == 0) return null;
+
 
 
       return (
@@ -59,7 +62,7 @@ function FilterableProductTable() {
         </thead>
         <tbody>
         {filteredArr.map(ele => <tr>
-            <td>{ele.name}</td>
+            <td>{ele.stocked ?ele.name :<span>*{ele.name}</span>}</td>
             <td>{ele.price}</td>
         </tr>)}
         </tbody>
