@@ -62,7 +62,9 @@ function FilterableProductTable() {
         </thead>
         <tbody>
         {filteredArr.map(ele => <tr>
-            <td>{ele.stocked ?ele.name :<span>*{ele.name}</span>}</td>
+            {/* <td>{ele.stocked ?ele.name :<span>*{ele.name}</span>}</td> */}
+            {/* <td>{ele.stocked ? '':'*' }{ele.name}</td> */}
+            <td>{!ele.stocked && '*' }{ele.name}</td>
             <td>{ele.price}</td>
         </tr>)}
         </tbody>
